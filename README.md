@@ -22,7 +22,12 @@ The reference code provided in this repository will help you get started buildin
 
 > **[NOTE]**
 > This code is intended to help you get started building your SCIM endpoint and is provided "AS IS." It is intended as a reference and there is no guarantee of it being actively maintained or supported. [Contributions](https://github.com/AzureAD/SCIMReferenceCode/wiki/Contributing-Overview) from the community are welcome to help build and maintain the repo.
+>
 
+## Key Updates
+1. update Entra endpoint to China
+2. Update framework to .Net 8.0
+   
 ## Capabilities 
 
 |Endpoint|Description|
@@ -84,3 +89,6 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## Trademarks 
 This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow Microsoft’s Trademark & Brand Guidelines. Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
+
+## Local Test
+<img width="1266" height="253" alt="image" src="https://github.com/user-attachments/assets/541599dd-3950-44c9-86e1-f8389fe408af" />
