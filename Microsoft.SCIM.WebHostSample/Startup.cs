@@ -81,7 +81,10 @@ namespace Microsoft.SCIM.WebHostSample
             }
 
             services.AddAuthentication(ConfigureAuthenticationOptions).AddJwtBearer(ConfigureJwtBearerOptons);
-            services.AddControllers().AddNewtonsoftJson(ConfigureMvcNewtonsoftJsonOptions);
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<HttpResponseExceptionFilter>();
+            }).AddNewtonsoftJson(ConfigureMvcNewtonsoftJsonOptions);
 
             services.AddSingleton(typeof(IProvider), this.ProviderBehavior);
             services.AddSingleton(typeof(IMonitor), this.MonitoringBehavior);

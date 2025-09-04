@@ -8,7 +8,7 @@ namespace Microsoft.SCIM
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Web;
+    using System.Net; // For WebUtility if needed
 
     public sealed class Filter : IFilter
     {
@@ -186,7 +186,8 @@ namespace Microsoft.SCIM
             foreach (char character in Filter.ReservedCharactersPerRfc3986.Value)
             {
                 string from = character.ToString(CultureInfo.InvariantCulture);
-                string to = HttpUtility.UrlEncode(from);
+                // Replace HttpUtility.UrlEncode with Uri.EscapeDataString for .NET Core
+                string to = Uri.EscapeDataString(from);
                 result.Add(from, to);
             }
             return result;
@@ -306,8 +307,7 @@ namespace Microsoft.SCIM
                 clone.ComparisonValue = placeholder;
                 string currentFilter = clone.Serialize();
                 string encodedFilter = 
-                    HttpUtility
-                    .UrlEncode(currentFilter)
+                    Uri.EscapeDataString(currentFilter)
                     .Replace(placeholder, filter.ComparisonValueEncoded, StringComparison.InvariantCulture);
                 if (string.IsNullOrWhiteSpace(allFilters))
                 {

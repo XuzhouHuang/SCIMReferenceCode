@@ -8,7 +8,6 @@ namespace Microsoft.SCIM
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
-    using System.Web.Http;
     using Newtonsoft.Json;
 
     public sealed class SampleProvider : ProviderBase, ISampleProvider

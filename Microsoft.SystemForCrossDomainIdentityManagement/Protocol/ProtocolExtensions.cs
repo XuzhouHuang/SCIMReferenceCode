@@ -11,11 +11,10 @@ namespace Microsoft.SCIM
     using System.IO;
     using System.Linq;
     using System.Net.Http;
-    using System.Net.Http.Formatting;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using System.Web;
+    using System.Net; // For WebUtility URL decoding
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
@@ -443,13 +442,8 @@ namespace Microsoft.SCIM
                 try
                 {
                     string contentType = MediaTypes.Protocol;
-
-                    MediaTypeFormatter contentFormatter = new JsonMediaTypeFormatter();
-                    requestContent =
-                        new ObjectContent<Dictionary<string, object>>(
-                            json,
-                            contentFormatter,
-                            contentType);
+                    string serialized = JsonConvert.SerializeObject(json, ProtocolConstants.JsonSettings.Value);
+                    requestContent = new StringContent(serialized, Encoding.UTF8, contentType);
                     result = new HttpRequestMessage(ProtocolExtensions.PatchMethod, resourceIdentifier);
                     result.Content = requestContent;
                     requestContent = null;
@@ -499,12 +493,8 @@ namespace Microsoft.SCIM
                 HttpContent requestContent = null;
                 try
                 {
-                    MediaTypeFormatter contentFormatter = new JsonMediaTypeFormatter();
-                    requestContent =
-                        new ObjectContent<Dictionary<string, object>>(
-                            json,
-                            contentFormatter,
-                            MediaTypes.Json);
+                    string serialized = JsonConvert.SerializeObject(json, ProtocolConstants.JsonSettings.Value);
+                    requestContent = new StringContent(serialized, Encoding.UTF8, MediaTypes.Json);
                     result = new HttpRequestMessage(ProtocolExtensions.PatchMethod, resourceIdentifier);
                     result.Content = requestContent;
                     requestContent = null;
@@ -555,12 +545,8 @@ namespace Microsoft.SCIM
                 HttpContent requestContent = null;
                 try
                 {
-                    MediaTypeFormatter contentFormatter = new JsonMediaTypeFormatter();
-                    requestContent =
-                        new ObjectContent<Dictionary<string, object>>(
-                            json,
-                            contentFormatter,
-                            contentType);
+                    string serialized = JsonConvert.SerializeObject(json, ProtocolConstants.JsonSettings.Value);
+                    requestContent = new StringContent(serialized, Encoding.UTF8, contentType);
                     result = new HttpRequestMessage(HttpMethod.Put, resourceIdentifier);
                     result.Content = requestContent;
                     requestContent = null;
@@ -611,12 +597,8 @@ namespace Microsoft.SCIM
                 HttpContent requestContent = null;
                 try
                 {
-                    MediaTypeFormatter contentFormatter = new JsonMediaTypeFormatter();
-                    requestContent =
-                        new ObjectContent<Dictionary<string, object>>(
-                            json,
-                            contentFormatter,
-                            contentType);
+                    string serialized = JsonConvert.SerializeObject(json, ProtocolConstants.JsonSettings.Value);
+                    requestContent = new StringContent(serialized, Encoding.UTF8, contentType);
                     result = new HttpRequestMessage(HttpMethod.Post, typeResourceIdentifier);
                     result.Content = requestContent;
                     requestContent = null;
@@ -1594,7 +1576,8 @@ namespace Microsoft.SCIM
             {
                 if (this.Message.RequestUri != null)
                 {
-                    string line = HttpUtility.UrlDecode(this.Message.RequestUri.AbsoluteUri);
+                    // Replaced HttpUtility.UrlDecode with WebUtility.UrlDecode for .NET Core compatibility
+                    string line = WebUtility.UrlDecode(this.Message.RequestUri.AbsoluteUri);
                     await this.innerWriter.WriteLineAsync(line).ConfigureAwait(false);
                 }
 

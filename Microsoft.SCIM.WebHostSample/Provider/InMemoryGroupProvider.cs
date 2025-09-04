@@ -8,7 +8,6 @@ namespace Microsoft.SCIM.WebHostSample.Provider
     using System.Linq.Expressions;
     using System.Net;
     using System.Threading.Tasks;
-    using System.Web.Http;
     using Microsoft.SCIM;
 
     public class InMemoryGroupProvider : ProviderBase

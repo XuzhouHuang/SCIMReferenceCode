@@ -7,7 +7,7 @@ namespace Microsoft.SCIM
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Web;
+    using System.Net; // For WebUtility if needed
 
     public static class IReadOnlyCollectionExtensions
     {
@@ -17,7 +17,7 @@ namespace Microsoft.SCIM
                 collection
                 .Select(
                     (string item) =>
-                        HttpUtility.UrlEncode(item))
+                        Uri.EscapeDataString(item))
                 .ToArray();
             return result;
         }

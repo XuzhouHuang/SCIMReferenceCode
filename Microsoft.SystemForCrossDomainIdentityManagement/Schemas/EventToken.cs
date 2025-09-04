@@ -73,13 +73,13 @@ namespace Microsoft.SCIM
             this.ParseTransaction(token.Payload);
         }
 
-        public IReadOnlyCollection<string> Audience
+    public IReadOnlyCollection<string>? Audience
         {
             get;
             set;
         }
 
-        public IDictionary<string, object> Events
+    public IDictionary<string, object> Events
         {
             get;
             private set;
@@ -121,13 +121,13 @@ namespace Microsoft.SCIM
             private set;
         }
 
-        public string Subject
+    public string? Subject
         {
             get;
             set;
         }
 
-        public string Transaction
+    public string? Transaction
         {
             get;
             set;

@@ -14,14 +14,14 @@ namespace Microsoft.SCIM
         }
 
         [DataMember(Name = AttributeNames.Type, IsRequired = false, EmitDefaultValue = false)]
-        public string TypeName
+    public string? TypeName
         {
             get;
             set;
         }
 
         [DataMember(Name = AttributeNames.Value)]
-        public string Value
+    public string? Value
         {
             get;
             set;

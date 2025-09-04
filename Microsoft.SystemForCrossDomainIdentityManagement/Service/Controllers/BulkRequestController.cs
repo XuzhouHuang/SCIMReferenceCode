@@ -11,7 +11,6 @@ namespace Microsoft.SCIM
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using System.Web.Http;
 
     [Route(ServiceConstants.RouteBulk)]
     [Authorize]
@@ -23,7 +22,8 @@ namespace Microsoft.SCIM
         {
         }
 
-        public async Task<BulkResponse2> Post([FromBody] BulkRequest2 bulkRequest)
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] BulkRequest2 bulkRequest)
         {
             string correlationIdentifier = null;
 
@@ -32,24 +32,21 @@ namespace Microsoft.SCIM
                 HttpRequestMessage request = this.ConvertRequest();
                 if (null == bulkRequest)
                 {
-                    throw new HttpResponseException(HttpStatusCode.BadRequest);
+                    return this.BadRequest();
                 }
 
-                if (!request.TryGetRequestIdentifier(out correlationIdentifier))
-                {
-                    throw new HttpResponseException(HttpStatusCode.InternalServerError);
-                }
+                request.TryGetRequestIdentifier(out correlationIdentifier);
 
                 IProvider provider = this.provider;
                 if (null == provider)
                 {
-                    throw new HttpResponseException(HttpStatusCode.InternalServerError);
+                    return this.StatusCode((int)HttpStatusCode.InternalServerError);
                 }
 
                 IReadOnlyCollection<IExtension> extensions = provider.ReadExtensions();
                 IRequest<BulkRequest2> request2 = new BulkRequest(request, bulkRequest, correlationIdentifier, extensions);
                 BulkResponse2 result = await provider.ProcessAsync(request2).ConfigureAwait(false);
-                return result;
+                return this.Ok(result);
                 
             }
             catch (ArgumentException argumentException)
@@ -64,7 +61,7 @@ namespace Microsoft.SCIM
                     monitor.Report(notification);
                 }
 
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return this.BadRequest();
             }
             catch (NotImplementedException notImplementedException)
             {
@@ -77,7 +74,7 @@ namespace Microsoft.SCIM
                             ServiceNotificationIdentifiers.BulkRequest2ControllerPostNotImplementedException);
                     monitor.Report(notification);
                 }
-                throw new HttpResponseException(HttpStatusCode.NotImplemented);
+                return this.StatusCode((int)HttpStatusCode.NotImplemented);
             }
             catch (NotSupportedException notSupportedException)
             {
@@ -91,7 +88,7 @@ namespace Microsoft.SCIM
                     monitor.Report(notification);
                 }
 
-                throw new HttpResponseException(HttpStatusCode.NotImplemented);
+                return this.StatusCode((int)HttpStatusCode.NotImplemented);
             }
             catch (Exception exception)
             {
@@ -105,7 +102,7 @@ namespace Microsoft.SCIM
                     monitor.Report(notification);
                 }
 
-                throw;
+                return this.StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
     }

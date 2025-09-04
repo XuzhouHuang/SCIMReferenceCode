@@ -10,7 +10,7 @@ namespace Microsoft.SCIM
     public abstract class UserBase : Resource
     {
         [DataMember(Name = AttributeNames.UserName)]
-        public virtual string UserName
+    public virtual string? UserName
         {
             get;
             set;

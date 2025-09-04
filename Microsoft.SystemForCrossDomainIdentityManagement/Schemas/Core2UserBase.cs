@@ -32,8 +32,8 @@ namespace Microsoft.SCIM
             set;
         }
 
-        [DataMember(Name = AttributeNames.Addresses, IsRequired = false, EmitDefaultValue = false)]
-        public virtual IEnumerable<Address> Addresses
+    [DataMember(Name = AttributeNames.Addresses, IsRequired = false, EmitDefaultValue = false)]
+    public virtual IEnumerable<Address>? Addresses
         {
             get;
             set;
@@ -47,29 +47,29 @@ namespace Microsoft.SCIM
             }
         }
 
-        [DataMember(Name = AttributeNames.DisplayName, IsRequired = false, EmitDefaultValue = false)]
-        public virtual string DisplayName
+    [DataMember(Name = AttributeNames.DisplayName, IsRequired = false, EmitDefaultValue = false)]
+    public virtual string? DisplayName
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.ElectronicMailAddresses, IsRequired = false, EmitDefaultValue = false)]
-        public virtual IEnumerable<ElectronicMailAddress> ElectronicMailAddresses
+    [DataMember(Name = AttributeNames.ElectronicMailAddresses, IsRequired = false, EmitDefaultValue = false)]
+    public virtual IEnumerable<ElectronicMailAddress>? ElectronicMailAddresses
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.Ims, IsRequired = false, EmitDefaultValue = false)]
-        public virtual IEnumerable<InstantMessaging> InstantMessagings
+    [DataMember(Name = AttributeNames.Ims, IsRequired = false, EmitDefaultValue = false)]
+    public virtual IEnumerable<InstantMessaging>? InstantMessagings
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.Locale, IsRequired = false, EmitDefaultValue = false)]
-        public virtual string Locale
+    [DataMember(Name = AttributeNames.Locale, IsRequired = false, EmitDefaultValue = false)]
+    public virtual string? Locale
         {
             get;
             set;
@@ -82,57 +82,57 @@ namespace Microsoft.SCIM
             set;
         }
 
-        [DataMember(Name = AttributeNames.Name, IsRequired = false, EmitDefaultValue = false)]
-        public virtual Name Name
+    [DataMember(Name = AttributeNames.Name, IsRequired = false, EmitDefaultValue = false)]
+    public virtual Name? Name
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.Nickname, IsRequired = false, EmitDefaultValue = false)]
-        public virtual string Nickname
+    [DataMember(Name = AttributeNames.Nickname, IsRequired = false, EmitDefaultValue = false)]
+    public virtual string? Nickname
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.PhoneNumbers, IsRequired = false, EmitDefaultValue = false)]
-        public virtual IEnumerable<PhoneNumber> PhoneNumbers
+    [DataMember(Name = AttributeNames.PhoneNumbers, IsRequired = false, EmitDefaultValue = false)]
+    public virtual IEnumerable<PhoneNumber>? PhoneNumbers
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.PreferredLanguage, IsRequired = false, EmitDefaultValue = false)]
-        public virtual string PreferredLanguage
+    [DataMember(Name = AttributeNames.PreferredLanguage, IsRequired = false, EmitDefaultValue = false)]
+    public virtual string? PreferredLanguage
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.Roles, IsRequired = false, EmitDefaultValue = false)]
-        public virtual IEnumerable<Role> Roles
+    [DataMember(Name = AttributeNames.Roles, IsRequired = false, EmitDefaultValue = false)]
+    public virtual IEnumerable<Role>? Roles
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.TimeZone, IsRequired = false, EmitDefaultValue = false)]
-        public virtual string TimeZone
+    [DataMember(Name = AttributeNames.TimeZone, IsRequired = false, EmitDefaultValue = false)]
+    public virtual string? TimeZone
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.Title, IsRequired = false, EmitDefaultValue = false)]
-        public virtual string Title
+    [DataMember(Name = AttributeNames.Title, IsRequired = false, EmitDefaultValue = false)]
+    public virtual string? Title
         {
             get;
             set;
         }
 
-        [DataMember(Name = AttributeNames.UserType, IsRequired = false, EmitDefaultValue = false)]
-        public virtual string UserType
+    [DataMember(Name = AttributeNames.UserType, IsRequired = false, EmitDefaultValue = false)]
+    public virtual string? UserType
         {
             get;
             set;

@@ -6,38 +6,9 @@ namespace Microsoft.SCIM
     using System.Net;
     using System.Net.Http;
 
-    internal class HttpStringResponseExceptionFactory : HttpResponseExceptionFactory<string>
+    internal static class HttpStringResponseExceptionFactory
     {
-        private const string ArgumentNameContent = "content";
-
-        private static readonly Lazy<HttpResponseMessageFactory<string>> ResponseMessageFactory =
-            new Lazy<HttpResponseMessageFactory<string>>(
-                () =>
-                    new HttpStringResponseMessageFactory());
-
-        public override HttpResponseMessage ProvideMessage(HttpStatusCode statusCode, string content)
-        {
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                throw new ArgumentNullException(HttpStringResponseExceptionFactory.ArgumentNameContent);
-            }
-
-            HttpResponseMessage result = null;
-            try
-            {
-                result = HttpStringResponseExceptionFactory.ResponseMessageFactory.Value.CreateMessage(statusCode, content);
-                return result;
-            }
-            catch
-            {
-                if (result != null)
-                {
-                    result.Dispose();
-                    result = null;
-                }
-
-                throw;
-            }
-        }
+        public static HttpResponseMessage CreateMessage(HttpStatusCode statusCode, string content) =>
+            new HttpResponseMessage(statusCode){ Content = new StringContent(content) };
     }
 }

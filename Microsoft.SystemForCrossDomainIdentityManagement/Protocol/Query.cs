@@ -6,10 +6,10 @@ namespace Microsoft.SCIM
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Specialized;
     using System.Globalization;
     using System.Linq;
-    using System.Web;
+    using System.Text;
+    using System.Net; // For WebUtility
 
     public sealed class Query : IQuery
     {
@@ -65,14 +65,15 @@ namespace Microsoft.SCIM
 
         public override string ToString()
         {
-            NameValueCollection parameters = HttpUtility.ParseQueryString(string.Empty);
+            // Build query parameters manually to avoid System.Web dependency
+            var parameters = new List<(string Key, string Value)>();
 
             if (true == this.RequestedAttributePaths?.Any())
             {
                 IReadOnlyCollection<string> encodedPaths = this.RequestedAttributePaths.Encode();
                 string requestedAttributes =
                     string.Join(Query.AttributeNameSeparator, encodedPaths);
-                parameters.Add(QueryKeys.Attributes, requestedAttributes);
+                parameters.Add((QueryKeys.Attributes, requestedAttributes));
             }
 
             if (true == this.ExcludedAttributePaths?.Any())
@@ -80,7 +81,7 @@ namespace Microsoft.SCIM
                 IReadOnlyCollection<string> encodedPaths = this.ExcludedAttributePaths.Encode();
                 string excludedAttributes =
                     string.Join(Query.AttributeNameSeparator, encodedPaths);
-                parameters.Add(QueryKeys.ExcludedAttributes, excludedAttributes);
+                parameters.Add((QueryKeys.ExcludedAttributes, excludedAttributes));
             }
 
             Dictionary<string, string> placeHolders;
@@ -93,11 +94,17 @@ namespace Microsoft.SCIM
                         (IFilter item) =>
                             Query.Clone(item, placeHolders))
                     .ToArray();
-                string filters = Filter.ToString(clones);
-                NameValueCollection filterParameters = HttpUtility.ParseQueryString(filters);
-                foreach (string key in filterParameters.AllKeys)
+                string filters = Filter.ToString(clones); // already returns 'filter=...'
+                // Parse the returned query style string minimally (key=value&...)
+                foreach (string pair in filters.Split('&', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    parameters.Add(key, filterParameters[key]);
+                    int idx = pair.IndexOf('=');
+                    if (idx > 0)
+                    {
+                        string k = pair.Substring(0, idx);
+                        string v = pair.Substring(idx + 1);
+                        parameters.Add((k, v));
+                    }
                 }
             }
             else
@@ -115,7 +122,7 @@ namespace Microsoft.SCIM
                         .StartIndex
                         .Value
                         .ToString(CultureInfo.InvariantCulture);
-                    parameters.Add(QueryKeys.StartIndex, startIndex);
+                    parameters.Add((QueryKeys.StartIndex, startIndex));
                 }
 
                 if (this.PaginationParameters.Count.HasValue)
@@ -126,11 +133,21 @@ namespace Microsoft.SCIM
                         .Count
                         .Value
                         .ToString(CultureInfo.InvariantCulture);
-                    parameters.Add(QueryKeys.Count, count);
+                    parameters.Add((QueryKeys.Count, count));
                 }
             }
 
-            string result = parameters.ToString();
+            // Serialize parameters manually
+            var sb = new StringBuilder();
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                if (i > 0) sb.Append('&');
+                var (k, v) = parameters[i];
+                sb.Append(Uri.EscapeDataString(k));
+                sb.Append('=');
+                sb.Append(v); // values assumed already encoded where needed earlier
+            }
+            string result = sb.ToString();
             foreach (KeyValuePair<string, string> placeholder in placeHolders)
             {
                 result = result.Replace(placeholder.Key, placeholder.Value, StringComparison.InvariantCulture);

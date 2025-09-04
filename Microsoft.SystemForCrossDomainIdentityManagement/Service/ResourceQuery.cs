@@ -8,8 +8,7 @@ namespace Microsoft.SCIM
     using System.Globalization;
     using System.Linq;
     using System.Net;
-    using System.Web;
-    using System.Web.Http;
+    using Microsoft.AspNetCore.WebUtilities;
 
     public sealed class ResourceQuery : IResourceQuery
     {
@@ -50,53 +49,33 @@ namespace Microsoft.SCIM
             string query = resource.Query;
             if (!string.IsNullOrWhiteSpace(query))
             {
-                NameValueCollection keyedValues = HttpUtility.ParseQueryString(query);
-                IEnumerable<string> keys = keyedValues.AllKeys;
-                foreach (string key in keys)
+                // query starts with '?'
+                var parsed = QueryHelpers.ParseQuery(query);
+                foreach (KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues> pair in parsed)
                 {
-                    if (string.Equals(key, QueryKeys.Attributes, StringComparison.OrdinalIgnoreCase))
+                    string key = pair.Key;
+                    string value = pair.Value.FirstOrDefault();
+                    if (string.Equals(key, QueryKeys.Attributes, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(value))
                     {
-                        string attributeExpression = keyedValues[key];
-                        if (!string.IsNullOrWhiteSpace(attributeExpression))
-                        {
-                            this.Attributes = ResourceQuery.ParseAttributes(attributeExpression);
-                        }
+                        this.Attributes = ResourceQuery.ParseAttributes(value);
                     }
-
-                    if (string.Equals(key, QueryKeys.Count, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(key, QueryKeys.Count, StringComparison.OrdinalIgnoreCase))
                     {
-                        Action<IPaginationParameters, int> action =
-                            new Action<IPaginationParameters, int>(
-                                (IPaginationParameters pagination, int paginationValue) =>
-                                    pagination.Count = paginationValue);
-                        this.ApplyPaginationParameter(keyedValues[key], action);
+                        Action<IPaginationParameters, int> action = (p, v) => p.Count = v;
+                        this.ApplyPaginationParameter(value, action);
                     }
-
-                    if (string.Equals(key, QueryKeys.ExcludedAttributes, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(key, QueryKeys.ExcludedAttributes, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(value))
                     {
-                        string attributeExpression = keyedValues[key];
-                        if (!string.IsNullOrWhiteSpace(attributeExpression))
-                        {
-                            this.ExcludedAttributes = ResourceQuery.ParseAttributes(attributeExpression);
-                        }
+                        this.ExcludedAttributes = ResourceQuery.ParseAttributes(value);
                     }
-
-                    if (string.Equals(key, QueryKeys.Filter, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(key, QueryKeys.Filter, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(value))
                     {
-                        string filterExpression = keyedValues[key];
-                        if (!string.IsNullOrWhiteSpace(filterExpression))
-                        {
-                            this.Filters = ResourceQuery.ParseFilters(filterExpression);
-                        }
+                        this.Filters = ResourceQuery.ParseFilters(value);
                     }
-
-                    if (string.Equals(key, QueryKeys.StartIndex, StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(key, QueryKeys.StartIndex, StringComparison.OrdinalIgnoreCase))
                     {
-                        Action<IPaginationParameters, int> action =
-                            new Action<IPaginationParameters, int>(
-                                (IPaginationParameters pagination, int paginationValue) =>
-                                    pagination.StartIndex = paginationValue);
-                        this.ApplyPaginationParameter(keyedValues[key], action);
+                        Action<IPaginationParameters, int> action = (p, v) => p.StartIndex = v;
+                        this.ApplyPaginationParameter(value, action);
                     }
                 }
             }

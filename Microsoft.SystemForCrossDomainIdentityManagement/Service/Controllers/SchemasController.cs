@@ -6,7 +6,6 @@ namespace Microsoft.SCIM
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
-    using System.Web.Http;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
